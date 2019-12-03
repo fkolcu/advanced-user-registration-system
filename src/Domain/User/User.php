@@ -15,30 +15,30 @@ class User implements JsonSerializable
     /**
      * @var string
      */
-    private $username;
+    private $email;
 
     /**
      * @var string
      */
-    private $firstName;
+    private $password;
 
     /**
      * @var string
      */
-    private $lastName;
+    private $token;
 
     /**
-     * @param int|null  $id
-     * @param string    $username
-     * @param string    $firstName
-     * @param string    $lastName
+     * @param int|null $id
+     * @param string $email
+     * @param string $password
+     * @param string|null $token
      */
-    public function __construct(?int $id, string $username, string $firstName, string $lastName)
+    public function __construct(string $email, string $password, int $id = null, string $token = null)
     {
         $this->id = $id;
-        $this->username = strtolower($username);
-        $this->firstName = ucfirst($firstName);
-        $this->lastName = ucfirst($lastName);
+        $this->email = $email;
+        $this->password = $password;
+        $this->token = $token;
     }
 
     /**
@@ -52,25 +52,25 @@ class User implements JsonSerializable
     /**
      * @return string
      */
-    public function getUsername(): string
+    public function getEmail(): string
     {
-        return $this->username;
+        return $this->email;
     }
 
     /**
      * @return string
      */
-    public function getFirstName(): string
+    public function getPassword(): string
     {
-        return $this->firstName;
+        return $this->password;
     }
 
     /**
      * @return string
      */
-    public function getLastName(): string
+    public function getToken(): string
     {
-        return $this->lastName;
+        return $this->token;
     }
 
     /**
@@ -80,9 +80,8 @@ class User implements JsonSerializable
     {
         return [
             'id' => $this->id,
-            'username' => $this->username,
-            'firstName' => $this->firstName,
-            'lastName' => $this->lastName,
+            'email' => $this->email,
+            'token' => $this->token,
         ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+use App\Domain\User\User;
+use App\Infrastructure\Persistence\User\UserRepository;
 use App\Service\EmailService;
 use App\Service\TokenGeneratorService;
 use App\Service\UserEmailService;
@@ -13,6 +15,9 @@ use Behat\Gherkin\Node\TableNode;
  */
 class ApiContext implements Context
 {
+    /**
+     * @var User
+     */
     private $user;
 
     /**
@@ -35,6 +40,9 @@ class ApiContext implements Context
      */
     private $emailService;
 
+    /**
+     * @var User
+     */
     private $registrationResponse;
 
     /**
@@ -67,7 +75,8 @@ class ApiContext implements Context
      */
     public function thereIsUserInformationProvidedAsJson(string $jsonUser)
     {
-        $this->user = json_decode($jsonUser);
+        $user = json_decode($jsonUser);
+        $this->user = new User($user->email, $user->password);
     }
 
     /**
@@ -76,8 +85,8 @@ class ApiContext implements Context
     public function emailShouldBeAValidEmailAddress()
     {
         PHPUnit\Framework\Assert::assertSame(
-            $this->user->email,
-            filter_var($this->user->email, FILTER_VALIDATE_EMAIL)
+            $this->user->getEmail(),
+            filter_var($this->user->getEmail(), FILTER_VALIDATE_EMAIL)
         );
     }
 
@@ -86,7 +95,7 @@ class ApiContext implements Context
      */
     public function emailShouldBeAUniqueEmailAddress()
     {
-        $isUnique = $this->userService->isEmailUnique($this->user->email);
+        $isUnique = $this->userService->isEmailUnique($this->user->getEmail());
 
         PHPUnit\Framework\Assert::assertTrue($isUnique);
     }
@@ -108,7 +117,7 @@ class ApiContext implements Context
      */
     public function tokenShouldBeGeneratedByProvidedUserInformation()
     {
-        $token = $this->tokenService->generate($this->user->email);
+        $token = $this->tokenService->generate($this->user->getEmail());
 
         PHPUnit\Framework\Assert::assertNotEmpty($token);
     }
@@ -144,11 +153,7 @@ class ApiContext implements Context
      */
     public function systemShouldReturnUserIdAndTheTokenAfterRegistration()
     {
-        PHPUnit\Framework\Assert::assertTrue(
-            key_exists("id", $this->registrationResponse)
-            && key_exists("token", $this->registrationResponse)
-        );
-        PHPUnit\Framework\Assert::assertNotEmpty($this->registrationResponse->id);
-        PHPUnit\Framework\Assert::assertNotEmpty($this->registrationResponse->token);
+        PHPUnit\Framework\Assert::assertNotEmpty($this->registrationResponse->getId());
+        PHPUnit\Framework\Assert::assertNotEmpty($this->registrationResponse->getToken());
     }
 }
