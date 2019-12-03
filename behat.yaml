@@ -1,0 +1,12 @@
+default:
+  suites:
+    domain:
+      contexts:
+        - DomainContext
+      filters:
+        tags: "@domain"
+    api:
+      contexts:
+        - ApiContext
+      filters:
+        tags: "@api"
