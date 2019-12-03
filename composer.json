@@ -30,6 +30,8 @@
         "slim/slim": "^4.1"
     },
     "require-dev": {
+        "behat/behat": "^3.5",
+        "phpspec/phpspec": "^6.1",
         "phpunit/phpunit": "^7.5"
     },
     "config": {
