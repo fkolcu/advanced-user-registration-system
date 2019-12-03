@@ -1,5 +1,9 @@
 <?php
 
+use App\Domain\User\UserRepository;
+use App\Service\EmailService;
+use App\Service\TokenGeneratorService;
+use App\Service\UserEmailService;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
@@ -40,6 +44,10 @@ class DomainContext implements Context
      * Every scenario gets its own context instance.
      * You can also pass arbitrary arguments to the
      * context constructor through behat.yml.
+     * @param EmailService $emailService
+     * @param UserEmailService $userService
+     * @param UserRepository $userRepository
+     * @param TokenGeneratorService $tokenService
      */
     public function __construct(
         EmailService $emailService,

@@ -22,17 +22,13 @@
     }
   ],
   "require": {
-    "ext-json": "*",
-    "monolog/monolog": "^1.24",
     "php": ">=7.1",
+    "ext-json": "*",
+    "firebase/php-jwt": "^5.0",
+    "monolog/monolog": "^1.24",
     "php-di/php-di": "^6.0",
     "slim/psr7": "^0.5",
     "slim/slim": "^4.1"
-  },
-  "require-dev": {
-    "phpspec/phpspec": "^5.0",
-    "behat/behat": "^3.5",
-    "phpunit/phpunit": "^8.4"
   },
   "config": {
     "process-timeout": 0,
@@ -51,5 +47,9 @@
   "scripts": {
     "start": "php -S localhost:8080 -t public",
     "test": "phpunit"
+  },
+  "require-dev": {
+    "behat/behat": "^3.5",
+    "phpspec/phpspec": "^6.1"
   }
 }
