@@ -14,10 +14,16 @@ trait ContainerInjection
      */
     public function getContainer()
     {
-        $base = __DIR__ . '/../../../';
+        $path_main = __DIR__ . '/../../../';
 
         // Instantiate PHP-DI ContainerBuilder
         $containerBuilder = new ContainerBuilder();
+
+        $settings = require $path_main . 'app/settings.php';
+        $dependencies = require $path_main . 'app/dependencies.php';
+
+        $settings($containerBuilder);
+        $dependencies($containerBuilder);
 
         // Build PHP-DI Container instance
         return $containerBuilder->build();
