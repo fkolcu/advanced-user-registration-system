@@ -1,13 +1,12 @@
 <?php
 
+use App\Application\Utility\ContainerInjection;
 use App\Domain\User\User;
 use App\Domain\User\UserRepository;
 use App\Service\EmailService;
 use App\Service\TokenGeneratorService;
 use App\Service\UserEmailService;
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
-use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 
 /**
@@ -15,6 +14,8 @@ use Behat\Gherkin\Node\TableNode;
  */
 class DomainContext implements Context
 {
+    use ContainerInjection;
+
     /**
      * @var User
      */
@@ -51,22 +52,14 @@ class DomainContext implements Context
      * Every scenario gets its own context instance.
      * You can also pass arbitrary arguments to the
      * context constructor through behat.yml.
-     * @param EmailService $emailService
-     * @param UserEmailService $userService
-     * @param UserRepository $userRepository
-     * @param TokenGeneratorService $tokenService
      */
-    public function __construct(
-        EmailService $emailService,
-        UserEmailService $userService,
-        UserRepository $userRepository,
-        TokenGeneratorService $tokenService
-    )
+    public function __construct()
     {
-        $this->emailService = $emailService;
-        $this->userService = $userService;
-        $this->userRepository = $userRepository;
-        $this->tokenService = $tokenService;
+        $container = $this->getContainer();
+        $this->emailService = $container->get(EmailService::class);
+        $this->userService = $container->get(UserEmailService::class);
+        $this->userRepository = $container->get(UserRepository::class);
+        $this->tokenService = $container->get(TokenGeneratorService::class);
     }
 
     /**
