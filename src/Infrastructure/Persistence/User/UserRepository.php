@@ -3,13 +3,13 @@
 namespace App\Infrastructure\Persistence\User;
 
 use App\Domain\User\User;
-use App\Service\TokenGeneratorService;
-use App\Service\UserPasswordEncryption;
-use Illuminate\Database\Capsule\Manager;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
+use App\Service\UserPasswordEncryption;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Capsule\Manager;
+use App\Domain\User\UserRepositoryInterface;
 
-class UserRepository
+class UserRepository implements UserRepositoryInterface
 {
     /**
      * @var Manager
@@ -35,7 +35,7 @@ class UserRepository
      * @param User $user
      * @return User
      */
-    public function save(User $user)
+    public function save(User $user):User
     {
         // Encrypt password
         $hashedPassword = $this->encryption->encrypt($user->getPassword());

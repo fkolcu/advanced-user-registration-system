@@ -33,7 +33,7 @@ class User implements JsonSerializable
      * @param string $password
      * @param string|null $token
      */
-    public function __construct(string $email, string $password, int $id = null, string $token = null)
+    public function __construct(string $email = null, string $password = null, int $id = null, string $token = null)
     {
         $this->id = $id;
         $this->email = $email;
