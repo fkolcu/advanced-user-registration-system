@@ -2,15 +2,22 @@
 
 namespace App\Service;
 
+use App\Infrastructure\Persistence\User\UserRepository;
+
 class UserEmailService
 {
-    public function __construct()
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
+
+    public function __construct(UserRepository $userRepository)
     {
+        $this->userRepository = $userRepository;
     }
 
     public function isEmailUnique(string $email): bool
     {
-        // TODO: write logic here
-        return true;
+        return null === $this->userRepository->findUserByEmail($email);
     }
 }

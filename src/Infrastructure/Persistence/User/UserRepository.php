@@ -3,41 +3,65 @@
 namespace App\Infrastructure\Persistence\User;
 
 use App\Domain\User\User;
-use App\Domain\User\UserNotFoundException;
-use Doctrine\ORM\EntityManager;
+use App\Service\TokenGeneratorService;
+use App\Service\UserPasswordEncryption;
+use Illuminate\Database\Capsule\Manager;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 
-class UserRepository implements \App\Domain\User\UserRepository
+class UserRepository
 {
     /**
-     * @var EntityManager
+     * @var Manager
      */
-    private $entityManager;
+    private $manager;
 
-    public function __construct(EntityManager $entityManager)
+    /**
+     * @var UserPasswordEncryption
+     */
+    private $encryption;
+
+    public function __construct(
+        Manager $manager,
+        UserPasswordEncryption $encryption
+    )
     {
-        $this->entityManager = $entityManager;
+        $this->manager = $manager;
+        $this->encryption = $encryption;
     }
 
+    /**
+     * Inserts user to database
+     * @param User $user
+     * @return User
+     */
     public function save(User $user)
     {
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        // Encrypt password
+        $hashedPassword = $this->encryption->encrypt($user->getPassword());
+
+        // Get user table and insert user to db
+        $table = $this->manager::table("user");
+
+        $id = $table->insertGetId([
+            "email" => $user->getEmail(),
+            "password" => $hashedPassword,
+            "token" => $user->getToken()
+        ]);
+
+        $user->setId($id);
+
         return $user;
     }
 
     /**
-     * @inheritDoc
+     * @param string $email
+     * @return Model|Builder|object|null
      */
-    public function findAll(): array
+    public function findUserByEmail(string $email)
     {
-        // TODO: Implement findAll() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function findUserOfId(int $id): User
-    {
-        // TODO: Implement findUserOfId() method.
+        $table = $this->manager::table("user");
+        $found = $table->where("email", "=", $email);
+        return $found->first();
     }
 }

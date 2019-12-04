@@ -2,8 +2,9 @@
 
 namespace spec\App\Service;
 
-use App\Service\UserEmailService;
 use PhpSpec\ObjectBehavior;
+use App\Service\UserEmailService;
+use App\Infrastructure\Persistence\User\UserRepository;
 
 class UserEmailServiceSpec extends ObjectBehavior
 {
@@ -12,8 +13,12 @@ class UserEmailServiceSpec extends ObjectBehavior
         $this->shouldHaveType(UserEmailService::class);
     }
 
-    function it_checks_if_email_given_by_user_is_unique()
+    function it_should_return_true_if_email_is_unique(UserRepository $userRepository)
     {
-        $this->isEmailUnique("this_is_unique@email.com")->shouldReturn(true);
+        $userRepository->findUserByEmail("email@example.com")
+            ->willReturn(null);
+
+        $this->beConstructedWith($userRepository);
+        $this->isEmailUnique("email@example.com")->shouldReturn(true);
     }
 }
