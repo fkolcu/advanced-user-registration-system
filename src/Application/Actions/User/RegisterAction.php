@@ -54,7 +54,10 @@ class RegisterAction extends UserAction
      */
     protected function action(): Response
     {
-        $body = $this->getFormData();
+        if ($this->args !== null || $this->args["requestType"] === "html") //html
+            $body = (object)$this->request->getParsedBody();
+        else //json
+            $body = $this->getFormData();
 
         // Check if required fields are sent correctly
         $check = $this->fieldRequirementChecker->check($body);
