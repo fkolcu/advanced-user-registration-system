@@ -51,6 +51,8 @@
   },
   "require-dev": {
     "behat/behat": "^3.5",
+    "behat/mink": "^1.7",
+    "dmore/chrome-mink-driver": "^2.7",
     "phpspec/phpspec": "^6.1"
   }
 }
