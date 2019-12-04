@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace App\Application\Actions;
 
-use App\Domain\DomainException\DomainRecordNotFoundException;
+use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpNotFoundException;
+use Slim\Exception\HttpBadRequestException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Log\LoggerInterface;
-use Slim\Exception\HttpBadRequestException;
-use Slim\Exception\HttpNotFoundException;
+use App\Domain\DomainException\DomainRecordNotFoundException;
 
 abstract class Action
 {
@@ -116,5 +116,24 @@ abstract class Action
         $json = json_encode($payload, JSON_PRETTY_PRINT);
         $this->response->getBody()->write($json);
         return $this->response->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * Returns customized response as json
+     * @param int $statusCode
+     * @param null $data
+     * @param string|null $errorMessage
+     * @return Response
+     */
+    protected function customRespond(int $statusCode, $data = null, string $errorMessage = null): Response
+    {
+        $error = null;
+
+        if ($data === null && !empty($errorMessage))
+            $error = new ActionError("Error", $errorMessage);
+
+        $payload = new ActionPayload($statusCode, $data, $error);
+
+        return $this->respond($payload);
     }
 }
