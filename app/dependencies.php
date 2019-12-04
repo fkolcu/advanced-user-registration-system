@@ -1,12 +1,13 @@
 <?php
 declare(strict_types=1);
 
-use DI\ContainerBuilder;
-use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use DI\ContainerBuilder;
+use Psr\Log\LoggerInterface;
+use Monolog\Handler\StreamHandler;
 use Monolog\Processor\UidProcessor;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
+use Illuminate\Database\Capsule\Manager;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
@@ -24,5 +25,14 @@ return function (ContainerBuilder $containerBuilder) {
 
             return $logger;
         },
+        Manager::class => function (ContainerInterface $c) {
+            $capsule = new Manager;
+            $capsule->addConnection($c->get('settings')['db']);
+
+            $capsule->setAsGlobal();
+            $capsule->bootEloquent();
+
+            return $capsule;
+        }
     ]);
 };
